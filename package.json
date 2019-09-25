@@ -1,0 +1,44 @@
+{
+  "name": "shiftjs-template-template",
+  "version": "0.1.3",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "@binaris/shift-code-transform": "0.0.2",
+    "@binaris/shift-db": "^0.3.1",
+    "@binaris/shift-fetch-runtime": "0.0.4",
+    "@binaris/shift-local-proxy": "0.0.11",
+    "@binaris/shift-server-function": "0.0.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.1.1"
+  },
+  "scripts": {
+    "start": "cross-env EXTEND_ESLINT=true react-scripts start",
+    "build": "cross-env EXTEND_ESLINT=true react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint backend && stylelint src/**/*.css"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "cypress": "^3.4.1",
+    "stylelint": "^10.1.0",
+    "stylelint-config-standard": "^18.3.0"
+  },
+  "stylelint": {
+    "extends": "stylelint-config-standard"
+  }
+}
