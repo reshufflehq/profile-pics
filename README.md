@@ -4,7 +4,7 @@ This is a [Reshuffle](https://reshuffle.com/) template.
 
 ## About
 
-A starting point to get you started with creating your website with Reshuffle platform.
+A starting point for creating your app with Reshuffle.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

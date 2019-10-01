@@ -1,6 +1,6 @@
-describe("Base React Application", () => {
-  it("Shows Learn React", () => {
+describe("Base Reshuffle Application", () => {
+  it("Shows Learn Reshuffle", () => {
     cy.visit("/");
-    cy.contains('Learn React');
+    cy.contains('Learn Reshuffle');
   });
 });
