@@ -2,7 +2,7 @@ version: 2.1
 aliases:
   - &defaults
     docker:
-      - image: cypress/base:10
+      - image: circleci/node:10
   - &attach_workspace
     - attach_workspace:
         at: ~/
@@ -19,8 +19,6 @@ jobs:
       - run:
           name: Install dependencies
           command: npm ci
-      - run:
-          command: npx cypress verify
       - save_cache:
           key: dependency-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
@@ -35,7 +33,6 @@ jobs:
             - dist
             - node_modules
             - project
-            - .cache/Cypress
   lint:
     <<: *defaults
     steps:
@@ -52,18 +49,6 @@ jobs:
       - run:
           name: Run unit tests
           command: npm run test
-  integration-test:
-    <<: *defaults
-    steps:
-      - checkout
-      - <<: *attach_workspace
-      - run:
-          name: Start
-          command: npm start
-          background: true
-      - run:
-          name: Run integration tests
-          command: npx cypress run
 workflows:
   version: 2
   commit:
@@ -73,8 +58,5 @@ workflows:
           requires:
             - build
       - unit-test:
-          requires:
-            - build
-      - integration-test:
           requires:
             - build

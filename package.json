@@ -48,7 +48,6 @@
   },
   "devDependencies": {
     "cross-env": "^5.2.1",
-    "cypress": "^3.4.1",
     "prettier": "^1.18.2",
     "stylelint": "^10.1.0",
     "stylelint-config-standard": "^18.3.0"
