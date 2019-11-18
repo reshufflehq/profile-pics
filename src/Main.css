@@ -1,0 +1,31 @@
+.error {
+    color: red;
+}
+
+header {
+    padding: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #333;
+    color: white;
+}
+
+.title h2 {
+    margin-left: 0.5em;
+    display: inline;
+}
+
+.profile .username {
+    margin-right: 1em;
+}
+
+.profile a {
+    color: #fc03ca;
+    text-decoration: none;
+}
+
+.profile a:hover {
+    color: #f5a6e5;
+    text-decoration: none;
+}
