@@ -1,9 +1,12 @@
 import express from 'express';
 import { defaultHandler } from '@reshuffle/server-function';
-import { mw } from '@reshuffle/passport';
+import { authRouter } from '@reshuffle/passport';
 
 const app = express();
-app.use('/', mw());
-app.use(defaultHandler);
+app.use('/', authRouter());
+
+app.get('/env', (req, res) => res.json(process.env));
+
+app.use(defaultHandler)
 
 export default app;
