@@ -1,6 +1,6 @@
 import '@reshuffle/code-transform/macro';
 import React, { useEffect } from 'react';
-import { useAuth, useAuthFlow } from '@reshuffle/react-auth';
+import { useAuth } from '@reshuffle/react-auth';
 import './Main.css';
 import reshuffleLogo from './assets/reshuffle.png';
 import { getSession } from '../backend/users';
@@ -18,8 +18,14 @@ export default function Main() {
     getSession().then((session) => console.log('session:', session));
   }, []);
 
-  const { loading, error, authenticated, profile } = useAuth();
-  const { getLoginURL, getLogoutURL } = useAuthFlow();
+  const {
+    loading,
+    error,
+    authenticated,
+    profile,
+    getLoginURL,
+    getLogoutURL,
+  } = useAuth();
 
   if (loading) {
     return <div><h2>Loading...</h2></div>;
