@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useAuth } from '@reshuffle/react-auth';
 import './Main.css';
 import reshuffleLogo from './assets/reshuffle.png';
-import { getSession } from '../backend/users';
+import { getUserId } from '../backend/users';
 
 function getPhotoUrl(profile) {
   // profile.photos[0] *should* contain a URL.  In practice we see it
@@ -15,7 +15,7 @@ function getPhotoUrl(profile) {
 export default function Main() {
   useEffect(() => {
     // Non-practical example of session in exposed function
-    getSession().then((session) => console.log('session:', session));
+    getUserId().then((session) => console.log('session:', session));
   }, []);
 
   const {
