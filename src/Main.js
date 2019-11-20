@@ -1,22 +1,15 @@
 import '@reshuffle/code-transform/macro';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@reshuffle/react-auth';
 import './Main.css';
 import reshuffleLogo from './assets/reshuffle.png';
-import { getUserId } from '../backend/users';
-
-function getPhotoUrl(profile) {
-  // profile.photos[0] *should* contain a URL.  In practice we see it
-  // on profile.picture (which is _not_ part of passport.Profile or
-  // passportAuth0.Profile).
-  return profile.picture;
-}
+import { incrViewCount } from '../backend/users';
 
 export default function Main() {
+  const [viewCount, setViewCount] = useState();
   useEffect(() => {
-    // Non-practical example of session in exposed function
-    getUserId().then((session) => console.log('session:', session));
-  }, []);
+    incrViewCount().then(setViewCount);
+  }, [setViewCount]);
 
   const {
     loading,
@@ -42,8 +35,8 @@ export default function Main() {
       <div className='profile'>
         {authenticated ? (
           <>
-            <img src={getPhotoUrl(profile)} height={20} />
-            <span className='username'>{profile.displayName}</span>
+            <div className='picture' style={{ backgroundImage: `url(${profile.picture})` }} alt='profile' />
+            <span className='username'>{profile.displayName} {viewCount ? `(${viewCount})` : ''}</span>
             <a href={getLogoutURL()}>Logout</a>
           </>
         ) : (

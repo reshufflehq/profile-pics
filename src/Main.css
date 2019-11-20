@@ -16,6 +16,11 @@ header {
     display: inline;
 }
 
+.profile {
+    display: flex;
+    align-items: center;
+}
+
 .profile .username {
     margin-right: 1em;
 }
@@ -28,4 +33,12 @@ header {
 .profile a:hover {
     color: #f5a6e5;
     text-decoration: none;
+}
+
+.profile .picture {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    margin-right: 4px;
+    background-size: cover;
 }

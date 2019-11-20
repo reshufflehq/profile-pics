@@ -1,7 +1,12 @@
 import { getCurrentUser } from '@reshuffle/server-function';
+import { update } from '@reshuffle/db';
 
 /* @expose */
-export async function getUserId() {
+export async function incrViewCount() {
   const user = getCurrentUser();
-  return user && user.id;
+  if (user === undefined) {
+    return 0;
+  }
+
+  return update(`/views/${user.id}`, (cnt) => (cnt || 0) + 1);
 }
