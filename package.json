@@ -1,5 +1,5 @@
 {
-  "name": "blank",
+  "name": "auth",
   "version": "0.0.1",
   "license": "MIT",
   "keywords": [
@@ -11,19 +11,18 @@
   ],
   "dependencies": {
     "@reshuffle/code-transform": "^0.1.0",
-    "@reshuffle/db": "^0.5.4",
+    "@reshuffle/db": "^0.5.5",
     "@reshuffle/fetch-runtime": "^0.1.0",
     "@reshuffle/local-proxy": "^0.3.1",
-    "@reshuffle/passport": "0.0.5",
-    "@reshuffle/react-auth": "^0.1.3",
+    "@reshuffle/passport": "^0.1.1",
+    "@reshuffle/react-auth": "^0.1.4",
     "@reshuffle/server-function": "^0.2.2",
-    "eslint": "^5.16.0",
     "eslint-config-react-app": "^5.0.2",
     "eslint-plugin-prettier": "^3.1.1",
     "express": "^4.17.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.2.0"
   },
   "scripts": {
     "start": "cross-env EXTEND_ESLINT=true react-scripts start",
