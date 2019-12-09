@@ -3,22 +3,28 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '@reshuffle/react-auth';
 import './Main.css';
 import reshuffleLogo from './assets/reshuffle.png';
-import { incrViewCount } from '../backend/users';
+import { getProfile } from '../backend/users';
+import Upload from './Upload';
 
 export default function Main() {
-  const [viewCount, setViewCount] = useState();
-  useEffect(() => {
-    incrViewCount().then(setViewCount);
-  }, [setViewCount]);
+  const [profilePic, setProfilePic] = useState();
 
   const {
     loading,
     error,
     authenticated,
     profile,
-    getLoginURL,
+    login,
     getLogoutURL,
   } = useAuth();
+
+  useEffect(() => {
+    getProfile().then((prof) => {
+      if (profile) {
+        setProfilePic(prof.picture.url);
+      }
+    });
+  }, [setProfilePic, profile]);
 
   if (loading) {
     return <div><h2>Loading...</h2></div>;
@@ -27,23 +33,27 @@ export default function Main() {
     return <div className='error'><h1>{error.toString()}</h1></div>;
   }
   return (
-    <header>
-      <div className='title'>
-        <img src={reshuffleLogo} height={20} alt='Reshuffle logo' />
-        <h2>Auth Demo</h2>
-      </div>
-      <div className='profile'>
-        {authenticated ? (
-          <>
-            <div className='picture' style={{ backgroundImage: `url(${profile.picture})` }} alt='profile' />
-            <span className='username'>{profile.displayName} {viewCount ? `(${viewCount})` : ''}</span>
-            <a href={getLogoutURL()}>Logout</a>
-          </>
-        ) : (
-          <a href={getLoginURL()}>Login</a>
-        )}
-      </div>
-    </header>
+    <>
+      <header>
+        <div className='title'>
+          <img src={reshuffleLogo} height={20} alt='Reshuffle logo' />
+          <h2>Profile pic uploader</h2>
+        </div>
+        <div className='profile'>
+          {authenticated ? (
+            <>
+              <div className='picture' style={{ backgroundImage: `url(${profilePic || profile.picture})` }} alt='profile' />
+              <span className='username'>{profile.displayName}</span>
+              <a href={getLogoutURL()}>Logout</a>
+            </>
+          ) : (
+            <a href='/login' onClick={(e) => { login({ newWindow: true }); e.preventDefault(); }}>Login</a>
+          )}
+        </div>
+      </header>
+      <section>
+        <Upload setDisplayProfilePic={setProfilePic} />
+      </section>
+    </>
   );
 }
-
