@@ -1,12 +1,25 @@
 import { getCurrentUser } from '@reshuffle/server-function';
-import { update } from '@reshuffle/db';
+import * as db from '@reshuffle/db';
+import storage from '@reshuffle/storage';
 
 /* @expose */
-export async function incrViewCount() {
+export async function getProfile() {
   const user = getCurrentUser();
   if (user === undefined) {
-    return 0;
+    return undefined;
   }
 
-  return update(`/views/${user.id}`, (cnt) => (cnt || 0) + 1);
+  return db.get(`/profile/${user.id}`);
+}
+
+/* @expose */
+export async function setProfilePic(token) {
+  const user = getCurrentUser(true);
+  const id = await storage.finalizeUpload(token);
+  return db.update(`/profile/${user.id}`, () => ({
+    picture: {
+      objectId: id, // Keep so we can delete it
+      url: storage.publicUrl(id),
+    },
+  }));
 }

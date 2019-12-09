@@ -1,27 +1,34 @@
 {
-  "name": "auth",
+  "name": "profile-pics",
   "version": "0.0.1",
   "license": "MIT",
   "keywords": [
     "reshuffle",
     "react",
-    "blank",
+    "profile",
+    "images",
+    "storage",
+    "upload",
+    "identity",
     "start",
     "fullstack"
   ],
   "dependencies": {
-    "@reshuffle/code-transform": "^0.1.0",
+    "@reshuffle/auth": "0.0.1",
     "@reshuffle/db": "^0.5.5",
     "@reshuffle/fetch-runtime": "^0.1.0",
-    "@reshuffle/local-proxy": "^0.3.1",
-    "@reshuffle/passport": "^0.1.1",
-    "@reshuffle/react-auth": "^0.1.4",
+    "@reshuffle/passport": "^0.2.0",
+    "@reshuffle/react-auth": "^0.1.7",
+    "@reshuffle/react-storage": "file:../reshuffle/common/temp/artifacts/packages/reshuffle-react-storage-0.0.0.tgz",
     "@reshuffle/server-function": "^0.2.2",
+    "@reshuffle/storage": "file:../reshuffle/common/temp/artifacts/packages/reshuffle-storage-0.0.0.tgz",
     "eslint-config-react-app": "^5.0.2",
     "eslint-plugin-prettier": "^3.1.1",
     "express": "^4.17.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-dropzone": "^10.2.1",
+    "react-image-crop": "^8.4.2",
     "react-scripts": "3.2.0"
   },
   "scripts": {
@@ -47,6 +54,8 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "@reshuffle/code-transform": "^0.1.0",
+    "@reshuffle/local-proxy": "^0.3.4",
     "cross-env": "^5.2.1",
     "prettier": "^1.18.2",
     "stylelint": "^10.1.0",
