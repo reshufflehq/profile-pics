@@ -19,10 +19,10 @@ function calcMargin(containerLength, objectLength) {
 }
 
 /**
- * Calculate object (O) crop (C) without given margin (m) => (D)
+ * Calculate object (O) crop (X) without given margin (m) => (D)
  *
  * mmmmOOOOmmmm
- *   CCCC
+ *   XXXX
  *     DD
  */
 function dropMargin(objectLength, margin, cropStart, cropSize) {
