@@ -59,7 +59,7 @@ export default function Main() {
         </div>
       </header>
       <main>
-        <Upload setDisplayProfilePic={setProfilePic} />
+        {authenticated && <Upload setDisplayProfilePic={setProfilePic} />}
       </main>
     </>
   );
