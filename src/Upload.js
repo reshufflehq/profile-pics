@@ -1,30 +1,55 @@
 import '@reshuffle/code-transform/macro';
 import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import clsx from 'clsx';
 import ReactCrop from 'react-image-crop';
-import 'react-image-crop/dist/ReactCrop.css';
 import { useFileUpload } from '@reshuffle/react-storage';
+import 'react-image-crop/dist/ReactCrop.css';
+import './Upload.css';
 import { setProfilePic } from '../backend/users';
 
 function getCroppedImg(image, crop, { width, height }) {
-  const canvas = document.createElement('canvas');
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
+  const scaleRatio = Math.max(scaleX, scaleY);
+  const edgeX = (scaleRatio * image.width - image.naturalWidth) / 2;
+  const edgeY = (scaleRatio * image.height - image.naturalHeight) / 2;
+  const scaledCropX = crop.x * scaleRatio;
+  const scaledCropY = crop.y * scaleRatio;
+  const scaledWidth = crop.width * scaleRatio;
+  const scaledHeight = crop.height * scaleRatio;
+  const scaledEndX = scaledCropX + scaledWidth;
+  const scaledEndY = scaledCropY + scaledHeight;
+
+  const offsetX = Math.min(Math.max(scaledCropX - edgeX, 0), image.naturalWidth);
+  const cropEndX = Math.min(Math.max(scaledEndX - edgeX, 0), image.naturalWidth);
+
+  const offsetY = Math.min(Math.max(scaledCropY - edgeY, 0), image.naturalHeight);
+  const cropEndY = Math.min(Math.max(scaledEndY - edgeY, 0), image.naturalHeight);
+
+  const cropWidthOnImage = cropEndX - offsetX;
+  const targetWidth = cropWidthOnImage / scaledWidth * width;
+  const targetOffsetX = scaledEndX >= image.naturalWidth + edgeX ? 0 : width - targetWidth;
+  const cropHeightOnImage = cropEndY - offsetY;
+  const targetHeight = cropHeightOnImage / scaledHeight * height;
+  const targetOffsetY = scaledEndY >= image.naturalHeight + edgeY ? 0 : height - targetHeight;
+
+  const canvas = document.createElement('canvas');
+
   canvas.width = width;
   canvas.height = height;
   const ctx = canvas.getContext('2d');
-  console.log(crop);
 
   ctx.drawImage(
     image,
-    crop.x * scaleX,
-    crop.y * scaleY,
-    crop.width * scaleX,
-    crop.height * scaleY,
-    0,
-    0,
-    width,
-    height
+    offsetX,
+    offsetY,
+    cropWidthOnImage,
+    cropHeightOnImage,
+    targetOffsetX,
+    targetOffsetY,
+    targetWidth,
+    targetHeight,
   );
 
   return new Promise((resolve, reject) => {
@@ -61,7 +86,17 @@ export default ({ setDisplayProfilePic }) => {
     }
   }, [setSrc]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop: onSelectFile, multiple: false });
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({
+    onDrop: onSelectFile,
+    multiple: false,
+    accept: 'image/*',
+  });
 
   useLayoutEffect(() => {
     (async () => {
@@ -85,10 +120,14 @@ export default ({ setDisplayProfilePic }) => {
   }, [status, uploads, setDisplayProfilePic, submittedToken]);
 
   return (
-    <>
+    <div className='upload'>
       {status === 'error' && <h3>Upload failed</h3>}
       {src ? (
         <>
+          <div className='actions'>
+            <input type='button' disabled={!blob || status === 'uploading'} onClick={uploadImage} value='Upload' />
+            <input type='button' onClick={() => setSrc()} value='Clear' />
+          </div>
           <ReactCrop
             src={src}
             crop={crop}
@@ -99,21 +138,21 @@ export default ({ setDisplayProfilePic }) => {
             onChange={setCrop}
             onComplete={setCrop}
           />
-          <input type='button' disabled={!blob || status === 'uploading'} onClick={uploadImage} value='Upload' />
-          <input type='button' onClick={() => setSrc()} value='Clear' />
         </>
       ) : (
-        <div {...getRootProps()}>
+        <div className={clsx('dropzone', isDragActive && 'active', isDragAccept && 'accept', isDragReject && 'reject')} {...getRootProps()}>
           <input {...getInputProps()} />
           {
             src
               ? null
-              : isDragActive
-                ? <p>Drop the files here ...</p>
-                : <p>Drag 'n' drop some files here, or click to select files</p>
+              : isDragReject
+                ? <h2>Please upload only 1 image file</h2>
+                : isDragActive
+                  ? <h2>Drop the files here ...</h2>
+                  : <h2>Drag 'n' drop some files here, or click to select files</h2>
           }
         </div>
     )}
-    </>
+    </div>
   );
 };

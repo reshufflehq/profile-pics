@@ -51,9 +51,9 @@ export default function Main() {
           )}
         </div>
       </header>
-      <section>
+      <main>
         <Upload setDisplayProfilePic={setProfilePic} />
-      </section>
+      </main>
     </>
   );
 }

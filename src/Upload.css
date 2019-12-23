@@ -1,0 +1,75 @@
+.upload {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.dropzone {
+    margin: 8px;
+    min-height: 300px;
+    min-width: 80%;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-width: 2;
+    border-radius: 2;
+    border-color: #eeeeee;
+    border-style: dashed;
+    background-color: #fafafa;
+    color: #bdbdbd;
+    outline: none;
+    transition: border .24s ease-in-out;
+}
+
+.dropzone.active {
+    border-color: #2196f3;
+}
+
+.dropzone.accept {
+    border-color: #00e676;
+    color: #00e676;
+}
+
+.dropzone.reject {
+    border-color: #ff1744;
+    color: #ff1744;
+}
+
+.actions {
+    margin: 8px;
+}
+
+.actions input + input {
+    margin-left: 8px;
+}
+
+.actions input[value=Clear] {
+    background-color: red;
+}
+
+.actions input {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.ReactCrop {
+    max-width: 90%;
+}
+
+.ReactCrop img {
+    object-fit: contain;
+    width: 100%;
+    height: 70vh;
+}
