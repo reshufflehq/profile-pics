@@ -15,8 +15,8 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    border-width: 2;
-    border-radius: 2;
+    border-width: 2px;
+    border-radius: 2px;
     border-color: #eeeeee;
     border-style: dashed;
     background-color: #fafafa;
@@ -49,6 +49,11 @@
 
 .actions input[value=Clear] {
     background-color: red;
+}
+
+.actions input[disabled] {
+    opacity: 0.3;
+    cursor: default;
 }
 
 .actions input {
