@@ -42,3 +42,7 @@ header {
     margin-right: 4px;
     background-size: cover;
 }
+
+main {
+    flex-grow: 1;
+}
