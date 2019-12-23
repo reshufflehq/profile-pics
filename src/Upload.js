@@ -8,48 +8,69 @@ import 'react-image-crop/dist/ReactCrop.css';
 import './Upload.css';
 import { setProfilePic } from '../backend/users';
 
-function getCroppedImg(image, crop, { width, height }) {
+/**
+ * Calculate margin (m) between container (C) and centered object (O)
+ *
+ * CCCCCCCCCCCC
+ * mmmmOOOOmmmm
+ */
+function calcMargin(containerLength, objectLength) {
+  return (containerLength - objectLength) / 2;
+}
+
+/**
+ * Calculate object (O) crop (C) without given margin (m) => (D)
+ *
+ * mmmmOOOOmmmm
+ *   CCCC
+ *     DD
+ */
+function dropMargin(objectLength, margin, cropStart, cropSize) {
+  const cropEnd = cropSize + cropStart;
+
+  const cropStartWithoutMargin = Math.min(Math.max(cropStart - margin, 0), objectLength);
+  const cropEndWithoutMargin = Math.min(Math.max(cropEnd - margin, 0), objectLength);
+  const cropSizeWithoutMargin = cropEndWithoutMargin - cropStartWithoutMargin;
+
+  return {
+    start: cropStartWithoutMargin,
+    size: cropSizeWithoutMargin,
+  };
+}
+
+function getCroppedImg(image, crop, resizeTo) {
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
   const scaleRatio = Math.max(scaleX, scaleY);
-  const edgeX = (scaleRatio * image.width - image.naturalWidth) / 2;
-  const edgeY = (scaleRatio * image.height - image.naturalHeight) / 2;
-  const scaledCropX = crop.x * scaleRatio;
-  const scaledCropY = crop.y * scaleRatio;
-  const scaledWidth = crop.width * scaleRatio;
-  const scaledHeight = crop.height * scaleRatio;
-  const scaledEndX = scaledCropX + scaledWidth;
-  const scaledEndY = scaledCropY + scaledHeight;
+  const cropWidth = crop.width * scaleRatio;
+  const cropHeight = crop.height * scaleRatio;
 
-  const offsetX = Math.min(Math.max(scaledCropX - edgeX, 0), image.naturalWidth);
-  const cropEndX = Math.min(Math.max(scaledEndX - edgeX, 0), image.naturalWidth);
+  const marginX = calcMargin(image.width * scaleRatio, image.naturalWidth);
+  const cropX = dropMargin(image.naturalWidth, marginX, crop.x * scaleRatio, cropWidth);
+  const marginY = calcMargin(image.height * scaleRatio, image.naturalHeight);
+  const cropY = dropMargin(image.naturalHeight, marginY, crop.y * scaleRatio, cropHeight);
 
-  const offsetY = Math.min(Math.max(scaledCropY - edgeY, 0), image.naturalHeight);
-  const cropEndY = Math.min(Math.max(scaledEndY - edgeY, 0), image.naturalHeight);
-
-  const cropWidthOnImage = cropEndX - offsetX;
-  const targetWidth = cropWidthOnImage / scaledWidth * width;
-  const targetOffsetX = scaledEndX >= image.naturalWidth + edgeX ? 0 : width - targetWidth;
-  const cropHeightOnImage = cropEndY - offsetY;
-  const targetHeight = cropHeightOnImage / scaledHeight * height;
-  const targetOffsetY = scaledEndY >= image.naturalHeight + edgeY ? 0 : height - targetHeight;
+  const resizedWidth = cropX.size / cropWidth * resizeTo.width;
+  const resizedOffsetX = cropX.start < marginX ? resizeTo.width - resizedWidth : 0;
+  const resizedHeight = cropY.size / cropHeight * resizeTo.height;
+  const resizedOffsetY = cropY.start < marginY ? resizeTo.height - resizedHeight : 0;
 
   const canvas = document.createElement('canvas');
 
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = resizeTo.width;
+  canvas.height = resizeTo.height;
   const ctx = canvas.getContext('2d');
 
   ctx.drawImage(
     image,
-    offsetX,
-    offsetY,
-    cropWidthOnImage,
-    cropHeightOnImage,
-    targetOffsetX,
-    targetOffsetY,
-    targetWidth,
-    targetHeight,
+    cropX.start,
+    cropY.start,
+    cropX.size,
+    cropY.size,
+    resizedOffsetX,
+    resizedOffsetY,
+    resizedWidth,
+    resizedHeight,
   );
 
   return new Promise((resolve, reject) => {
@@ -64,7 +85,7 @@ function getCroppedImg(image, crop, { width, height }) {
   });
 }
 
-const imageSize = { width: 40, height: 40 };
+const resizedImageSize = { width: 40, height: 40 };
 
 export default ({ setDisplayProfilePic }) => {
   const [src, setSrc] = useState();
@@ -101,8 +122,9 @@ export default ({ setDisplayProfilePic }) => {
   useLayoutEffect(() => {
     (async () => {
       if (imageRef && crop.width && crop.height) {
-        const blob = await getCroppedImg(imageRef, crop, imageSize);
-        blob.name = `profile-${parseInt(Math.random() * 10000)}.jpg`;
+        const blob = await getCroppedImg(imageRef, crop, resizedImageSize);
+        // Generate a unique name to reset useFileUpload state
+        blob.name = `profile-${parseInt(Math.random() * 1000000)}.jpg`;
         setBlob(blob);
       }
     })();
@@ -132,8 +154,8 @@ export default ({ setDisplayProfilePic }) => {
             src={src}
             crop={crop}
             ruleOfThirds
-            minWidth={imageSize.width}
-            minHeight={imageSize.height}
+            minWidth={resizedImageSize.width}
+            minHeight={resizedImageSize.height}
             onImageLoaded={setImageRef}
             onChange={setCrop}
             onComplete={setCrop}

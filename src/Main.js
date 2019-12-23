@@ -1,5 +1,5 @@
 import '@reshuffle/code-transform/macro';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@reshuffle/react-auth';
 import './Main.css';
 import reshuffleLogo from './assets/reshuffle.png';
@@ -19,12 +19,19 @@ export default function Main() {
   } = useAuth();
 
   useEffect(() => {
-    getProfile().then((prof) => {
-      if (profile) {
+    (async () => {
+      // NOTE: no error handling implemented here
+      const prof = await getProfile();
+      if (prof) {
         setProfilePic(prof.picture.url);
       }
-    });
+    })();
   }, [setProfilePic, profile]);
+
+  const handleLogin = useCallback((e) => {
+    login({ newWindow: true });
+    e.preventDefault();
+  }, [login]);
 
   if (loading) {
     return <div><h2>Loading...</h2></div>;
@@ -47,7 +54,7 @@ export default function Main() {
               <a href={getLogoutURL()}>Logout</a>
             </>
           ) : (
-            <a href='/login' onClick={(e) => { login({ newWindow: true }); e.preventDefault(); }}>Login</a>
+            <a href='/login' onClick={handleLogin}>Login</a>
           )}
         </div>
       </header>
